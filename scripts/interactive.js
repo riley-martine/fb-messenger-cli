@@ -347,6 +347,18 @@ InteractiveCli.prototype.handleCommands = function(command) {
             });
             break;
         }
+        
+        case '/o':
+        case '/ones':
+        case '/one':
+            console.log('Showing you individual conversations...'.cyan);
+            emitter.emit('getConvos', current_userId, (data) => {
+                action = data.action;
+                currentThreadCount = data.threadCount;
+                rlInterface.prompt(true);
+                recipientId = '';
+            });
+            break;
 
         case '/g':
         case '/group':
@@ -420,6 +432,7 @@ InteractiveCli.prototype.handleCommands = function(command) {
             console.log('/q /exit /quit .... Quit the application'.cyan);
             console.log('/logout ........... Exit and flush credentials'.cyan);
             console.log('/g /groups ........ Bring up your group conversations'.cyan);
+            console.log('/o /ones .......... Bring up your one-on-one conversations'.cyan);
             console.log('/s /switch [#] .... Quick switch to conversation number #'.cyan);
             console.log('/search [query] ... Search your friends to chat'.cyan);
             console.log('/v /view [#] ...... View the attachment by the number given after the type'.cyan);
