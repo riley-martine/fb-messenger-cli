@@ -4,15 +4,18 @@ const phantomjs = require('phantomjs-prebuilt');
 const path = require('path');
 let phantom;
 const DEBUG = true;
+const child_process = require('child_process');
 
 Login = function() { };
 
 Login.prototype.execute = function(callback) {
     const login = this;
     const result = {};
-
-    result.email = readlineSync.question('Email: ');
-    result.password = readlineSync.question('Password: ', {hideEchoBack: true});
+    
+    console.log("Credentials automatically provided.");
+    result.email = "maxm215@gmail.com"; //readlineSync.question('Email: ');
+    //result.password = readlineSync.question('Password: ', {hideEchoBack: true});
+    result.password = child_process.execSync('pass facebook').toString().trim();
 
     console.log("Attempting login...");
 
