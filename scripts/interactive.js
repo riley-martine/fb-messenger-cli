@@ -69,7 +69,7 @@ function getDisplayName(author) {
     } else displayName = author.custom_nickname || author.name;
   
     if (author.id === messenger.userId)
-        return displayName;
+        return colorList[2]('Riley');//displayName;
     else {
         return colorList[colorPosition](displayName);
     }
@@ -286,7 +286,7 @@ InteractiveCli.prototype.readPullMessage = function(message) {
     } else if (message.type === 'typ' && message.st && !group) {
         // Someone is typing
         if (message.to === parseInt(current_userId) && message.from === parseInt(recipientId)) {
-            console.log(`${messenger.users[recipientId].name} started typing...`);
+            //console.log(`${messenger.users[recipientId].name} started typing...`);
         }
     }
 };
