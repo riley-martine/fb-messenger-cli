@@ -288,11 +288,13 @@ InteractiveCli.prototype.readPullMessage = function(message) {
         if (message.to === parseInt(current_userId) && message.from === parseInt(recipientId)) {
 			// st === 1 is started typing
 			if (message.st) {
+                heading.isTyping = true;
 				interactive.printThread();
-				console.log(`\n${messenger.users[recipientId].name} started typing...`);
-				rlInterface.prompt(true);
+				//console.log(`\n${messenger.users[recipientId].name} started typing...`);
+				//rlInterface.prompt(true);
 			} else {
-				// Clear the message if he stopped typing
+				// Clear the message if they stopped typing
+                heading.isTyping = false;
 				interactive.printThread();
 			}
         }

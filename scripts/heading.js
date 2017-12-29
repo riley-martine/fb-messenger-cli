@@ -1,6 +1,7 @@
 class Heading {
     constructor() {
         this.data = [];
+        this.isTyping = false;
     }
 
     clearUnread(id) {
@@ -20,7 +21,7 @@ class Heading {
     writeHeader(convoId) {
         let head = '';
         let first = true;
-        const columns = process.stdout.columns - 1;
+        const columns = process.stdout.columns;
 
         this.data.forEach((entry, i) => {
             if (entry.fbid === convoId) {
@@ -45,12 +46,15 @@ class Heading {
             first = false;
         });
 
-        for (let j = head.length; j < columns; ++j) {
+        for (let j = head.length; j < columns - 1; ++j) {
             head += ' ';
         }
-
-        console.log(head.bgBlue);
+        if (this.isTyping)
+            console.log(head.bgBlue+' '.bgRed);
+        else console.log((head+' ').bgBlue);
+        
     }
+
 }
 
 module.exports = new Heading();
