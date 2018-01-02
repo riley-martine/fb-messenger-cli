@@ -15,6 +15,12 @@ const path = require('path');
 const notifier = require('node-notifier');
 const readline = require('readline');
 
+var https = require('https');
+var fs = require('fs');
+const { URL } = require('url');
+const { exec } = require('child_process');
+
+
 let messenger;
 
 // 0 is select conversation, 1 is send message
@@ -330,6 +336,19 @@ InteractiveCli.prototype.printThread = function(){
     rlInterface.prompt(true);
 };
 
+var download = function(url, dest, cb) {
+  var file = fs.createWriteStream(dest);
+  var request = https.get(url, function(response) {
+    response.pipe(file);
+    file.on('finish', function() {
+      file.close(cb);  // close() is async, call cb after close completes.
+    });
+  }).on('error', function(err) { // Handle errors
+    fs.unlink(dest); // Delete the file async. (But we don't check the result)
+    if (cb) cb(err.message);
+  });
+};
+
 InteractiveCli.prototype.handleCommands = function(command) {
     command = command.toLowerCase().trim();
     const options = command.split(' ');
@@ -411,8 +430,25 @@ InteractiveCli.prototype.handleCommands = function(command) {
                 if (att >= 0 && att < attsNo) {
                     const url = atts[att];
                     if (url) {
-                        open(url);
-                        console.log('Attachment now open in browser');
+                        try {
+							const myURL = new URL(url);
+							const fname = myURL.pathname.split('/').pop();
+							download(url, fname, function() {
+								exec('feh '+ fname, (error, stdout, stderr) => {
+									if (error) {
+										console.error(`exec error: ${error}`);
+									}	
+									fs.unlink(fname, function (err) {
+										if (err) {
+											throw err;
+										}
+									});
+								});
+							});
+                        } catch (err) {
+                            open(url);
+                            console.log('Attachment now open in browser');
+                        }
                     } else {
                         console.log('Couldn\'t open attachement in browser');
                     }
