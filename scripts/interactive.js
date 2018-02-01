@@ -195,12 +195,13 @@ InteractiveCli.prototype.initializeConversationViewFromFbid = function(id) {
     listeners.getThreadInfo(id, (err, threadInfo) => {
         if (err) {
             console.log(err);
-            console.log('Exiting...');
-            process.exit(1);
+            console.log('Looking up conversation with id only');
+            currentConversation = undefined;
+            this.currentConversationId = id;
+        } else {
+            currentConversation = threadInfo;
+            this.currentConversationId = threadInfo.thread_fbid;
         }
-
-        currentConversation = threadInfo;
-        this.currentConversationId = threadInfo.thread_fbid;
 
         // Unread messages in heading
         heading.clearUnread(id);
@@ -299,7 +300,7 @@ InteractiveCli.prototype.readPullMessage = function(message) {
         interactive.threadHistory.push(msg);
         interactive.printThread();
 
-    } else if (message.type === 'typ' && message.st && !this.currentConversation.isGroup) {
+    } else if (message.type === 'typ' && message.st && this.currentConversation && !this.currentConversation.isGroup) {
         // Someone is typing
         if (message.to === parseInt(current_userId) && message.from === parseInt(recipientId)) {
 			// st === 1 is started typing
@@ -313,7 +314,7 @@ InteractiveCli.prototype.readPullMessage = function(message) {
                 heading.isTyping = false;
 				interactive.printThread();
 			}
-        }
+       }
     }
 };
 
